@@ -724,4 +724,19 @@ h2 {
     transition: none !important;
     animation: none !important;
   }
+  .moroccan-signature {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #526348;
+    margin-top: 20px;
+}
+
+.morocco-flag {
+    font-size: 20px;
+}
 }
