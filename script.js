@@ -54,8 +54,8 @@ const quizResult = document.getElementById("quiz-result");
 const quizMatches = {
 
   tea: [
-    "Transparent herbal teas",
-    "Explore the visible-herb tea sachet concept.",
+    "Transparent herbal infusions",
+    "Explore the visible-herb infusion sachet concept.",
     "#tea-range"
   ],
 
@@ -67,7 +67,7 @@ const quizMatches = {
 
   gift: [
     "The SOLUNA Gift Box",
-    "A thoughtful presentation with tea and a cup.",
+    "A thoughtful presentation with infusion and a cup.",
     "#gift"
   ],
 
