@@ -96,8 +96,4 @@ function assistantReply(q){const s=q.toLowerCase();if(/aroma|flavou?r|taste|mint
 document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('chatInput'),q=input.value.trim();if(!q)return;addChat(q,'user');addChat(assistantReply(q));input.value='';});
 renderProducts('tea');renderGiftChoices();updateCart();
 </script>
-</body></html>
-<div class="moroccan-signature">
-  <span>Made by Moroccan Hands</span>
-  <span class="morocco-flag">🇲🇦</span>
-</div>
+
