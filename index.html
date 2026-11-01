@@ -67,7 +67,7 @@ const products=[
  {id:'gift-box',name:'The SOLUNA Gift Box',type:'gift',blend:'Gift collection',aroma:'A selection of blends',ingredients:'A curated selection of teas and capsules',price:129,img:''}
 ];
 const productGrid=document.getElementById('productGrid');let cart=[];let currentShop='tea';
-function renderProducts(filter='Infusion'){
+function renderProducts(filter='Infusions'){
  currentShop=filter;const shown=products.filter(p=>p.type===filter);
  const titles={tea:['THE TEA BOUTIQUE','Discover our botanical teas','Transparent herbal sachets, with a blend for every taste.'],capsule:['THE CAPSULE BOUTIQUE','Explore botanical capsules','Discover the same botanical blends in our capsule-inspired format.'],gift:['PERSONALIZED GIFT BOX','Create a gift that feels personal','Choose your mug and add one, two or three blends.']};
  document.getElementById('shopEyebrow').textContent=titles[filter][0];document.getElementById('shopTitle').textContent=titles[filter][1];document.getElementById('shopDescription').textContent=titles[filter][2];
