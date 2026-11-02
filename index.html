@@ -67,16 +67,64 @@ const products=[
  {id:'gift-box',name:'The SOLUNA Gift Box',type:'gift',blend:'Gift collection',aroma:'A selection of blends',ingredients:'A curated selection of infusions and capsules',price:129,img:'the gift-box.jpeg'}
 ];
 const productGrid=document.getElementById('productGrid');let cart=[];let currentShop='Infusion';
+
 function renderProducts(filter='Infusions'){
- currentShop=filter;const shown=products.filter(p=>p.type===filter);
- const titles={Infusions:['THE INFUSION BOUTIQUE','Discover our botanical infusions','Transparent herbal sachets, with a blend for every taste.'],capsule:['THE CAPSULE BOUTIQUE','Explore botanical capsules','Discover the same botanical blends in our capsule-inspired format.'],gift:['PERSONALIZED GIFT BOX','Create a gift that feels personal','Choose your mug and add one, two or three blends.']};
- document.getElementById('shopEyebrow').textContent=titles[filter][0];document.getElementById('shopTitle').textContent=titles[filter][1];document.getElementById('shopDescription').textContent=titles[filter][2];
- document.getElementById('giftBuilder').classList.toggle('active',filter==='gift');productGrid.style.display=filter==='gift'?'none':'grid';
- productGrid.innerHTML=shown.map(p=>`<article class="product-card"><img src="${p.img}" alt="${p.name}" loading="lazy"><div class="product-info"><span class="product-tag">${p.type==='Infusions'?'TRANSPARENT HERBAL INFUSION':'BOTANICAL CAPSULES'}</span><h3>${p.name}</h3><p>${p.ingredients}.</p><div class="product-meta">${p.blend} · ${p.aroma}</div><div class="product-bottom"><span class="price">${p.price} MAD*</span><button class="add-btn" data-id="${p.id}">Add +</button></div></div></article>`).join('');
- productGrid.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click',()=>addToCart(btn.dataset.id)));
+ currentShop=filter;
+ const shown=products.filter(p=>p.type===filter);
+ const titles={
+  Infusions:['THE INFUSION BOUTIQUE','Discover our botanical infusions','Choose your infusion box size.'],
+  capsule:['THE CAPSULE BOUTIQUE','Explore botanical capsules','Choose your capsule box size.'],
+  gift:['PERSONALIZED GIFT BOX','Create a gift that feels personal','Choose your mug and add one, two or three blends.']
+ };
+ document.getElementById('shopEyebrow').textContent=titles[filter][0];
+ document.getElementById('shopTitle').textContent=titles[filter][1];
+ document.getElementById('shopDescription').textContent=titles[filter][2];
+ document.getElementById('giftBuilder').classList.toggle('active',filter==='gift');
+ productGrid.style.display=filter==='gift'?'none':'grid';
+
+ productGrid.innerHTML=shown.map(p=>{
+  const isTea=p.type==='Infusions';
+  const sizes=isTea
+   ? [{qty:15,price:39},{qty:30,price:75}]
+   : [{qty:10,price:49},{qty:25,price:99}];
+  return `<article class="product-card">
+   <img src="${p.img}" alt="${p.name}" loading="lazy">
+   <div class="product-info">
+    <span class="product-tag">${isTea?'BOTANICAL INFUSIONS':'BOTANICAL CAPSULES'}</span>
+    <h3>${p.name}</h3>
+    <p>${p.ingredients}.</p>
+    <div class="product-meta">${p.blend} · ${p.aroma}</div>
+    <label for="size-${p.id}">Choose your box</label>
+    <select id="size-${p.id}" class="box-size">
+     ${sizes.map(s=>`<option value="${s.qty}" data-price="${s.price}">Box of ${s.qty} — ${s.price} DHS</option>`).join('')}
+    </select>
+    <div class="product-bottom">
+     <span class="price" id="price-${p.id}">${sizes[0].price} DHS</span>
+     <button class="add-btn" data-id="${p.id}">Add +</button>
+    </div>
+   </div>
+  </article>`;
+ }).join('');
+
+ productGrid.querySelectorAll('.box-size').forEach(select=>{
+  select.addEventListener('change',()=>{
+   const option=select.selectedOptions[0];
+   document.getElementById('price-'+select.id.replace('size-','')).textContent=option.dataset.price+' DHS';
+  });
+ });
+
+ productGrid.querySelectorAll('.add-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   const select=document.getElementById('size-'+btn.dataset.id);
+   const option=select.selectedOptions[0];
+   addToCart(btn.dataset.id,Number(option.value),Number(option.dataset.price));
+  });
+ });
+
  document.querySelectorAll('.shop-category').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
  if(filter==='gift')renderGiftChoices();
 }
+
 document.querySelectorAll('.shop-category').forEach(btn=>btn.addEventListener('click',()=>renderProducts(btn.dataset.filter)));
 document.getElementById('customizeGiftLink').addEventListener('click',()=>renderProducts('gift'));
 function renderGiftChoices(){const count=Number(document.getElementById('giftCount').value);const host=document.getElementById('giftProductChoices');const choices=products.filter(p=>p.type==='Infusions'||p.type==='capsule');host.innerHTML=Array.from({length:count},(_,i)=>`<label for="giftBlend${i}">Choose blend ${i+1}</label><select id="giftBlend${i}" class="gift-blend-select"><option value="Infusions">Select a infusion or capsule blend</option>${choices.map(p=>`<option value="${p.id}">${p.name} — ${p.type==='Infusions'?'Infusions':'Capsules'}</option>`).join('')}</select>`).join('');updateGiftSummary();}
