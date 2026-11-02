@@ -144,10 +144,28 @@ function updateGiftSummary(){const mug=document.getElementById('giftMug').value;
 document.getElementById('giftCount').addEventListener('change',renderGiftChoices);document.getElementById('giftMug').addEventListener('change',updateGiftSummary);document.getElementById('giftProductChoices').addEventListener('change',updateGiftSummary);
 document.getElementById('addGiftBox').addEventListener('click',()=>{const selected=[...document.querySelectorAll('.gift-blend-select')].map(x=>products.find(p=>p.id===x.value)).filter(Boolean);const required=Number(document.getElementById('giftCount').value);if(selected.length!==required){document.getElementById('giftSummary').textContent='Please choose a blend for each selection before adding your gift box.';return;}const mug=document.getElementById('giftMug').value;const details=selected.map(p=>p.name).join(', ');const price=139+selected.reduce((sum,p)=>sum+p.price,0);cart.push({id:'custom-gift-'+Date.now(),name:`Personalized Gift Box (${mug}; ${details})`,price,qty:1});updateCart();document.getElementById('giftSummary').textContent='Your personalized gift box has been added to your bag. You can review it below.';document.getElementById('cart').scrollIntoView({behavior:'smooth'});});
 
-function addToCart(id,boxSize,boxPrice){
- const p=products.find(x=>x.id===id);
- const cartId=id+'-'+boxSize;
- const found=cart.find(x=>x.cartId===cartId);
+function addToCart(id, boxSize, boxPrice){
+  const p = products.find(x => x.id === id);
+  if(!p) return;
+
+  const cartId = id + '-' + boxSize;
+  const found = cart.find(x => x.id === cartId);
+
+  if(found){
+    found.qty++;
+  }else{
+    cart.push({
+      ...p,
+      id: cartId,
+      productId: id,
+      boxSize: boxSize,
+      price: boxPrice,
+      qty: 1
+    });
+  }
+
+  updateCart();
+}
  if(found){
   found.qty++;
  }else{
