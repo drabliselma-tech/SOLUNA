@@ -166,20 +166,6 @@ function addToCart(id, boxSize, boxPrice){
 
   updateCart();
 }
- if(found){
-  found.qty++;
- }else{
-  cart.push({
-   ...p,
-   id:cartId,
-   productId:id,
-   boxSize:boxSize,
-   price:boxPrice,
-   qty:1
-  });
- }
- updateCart();
-}
 
 function updateCart(){document.getElementById('cartCount').textContent=cart.reduce((s,p)=>s+p.qty,0);const list=document.getElementById('cartList');if(!cart.length){list.innerHTML='<p>Your bag is currently empty.</p>';document.getElementById('cartTotal').textContent='Total: 0 MAD';return;}list.innerHTML=cart.map(p=>`<div class="cart-item"><strong>${p.name}</strong><span>${p.price} MAD</span><div class="qty-controls"><button data-minus="${p.id}" aria-label="Decrease quantity">−</button><span>${p.qty}</span><button data-plus="${p.id}" aria-label="Increase quantity">+</button></div><button class="remove-btn" data-remove="${p.id}">Remove</button></div>`).join('');const total=cart.reduce((s,p)=>s+p.price*p.qty,0);document.getElementById('cartTotal').textContent=`Total: ${total} MAD`;list.querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>{cart.find(p=>p.id===b.dataset.plus).qty++;updateCart()});list.querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>{const p=cart.find(p=>p.id===b.dataset.minus);p.qty--;if(p.qty<=0)cart=cart.filter(x=>x.id!==p.id);updateCart()});list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart=cart.filter(p=>p.id!==b.dataset.remove);updateCart()});}
 // Mobile navigation
