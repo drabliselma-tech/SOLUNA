@@ -131,7 +131,26 @@ function renderGiftChoices(){const count=Number(document.getElementById('giftCou
 function updateGiftSummary(){const mug=document.getElementById('giftMug').value;const selected=[...document.querySelectorAll('.gift-blend-select')].map(x=>products.find(p=>p.id===x.value)).filter(Boolean);const total=129+selected.reduce((sum,p)=>sum+p.price,0);document.getElementById('giftSummary').textContent=`Your box: ${mug} + ${selected.length} selected blend(s). Estimated total: ${total} MAD* (illustrative).`;}
 document.getElementById('giftCount').addEventListener('change',renderGiftChoices);document.getElementById('giftMug').addEventListener('change',updateGiftSummary);document.getElementById('giftProductChoices').addEventListener('change',updateGiftSummary);
 document.getElementById('addGiftBox').addEventListener('click',()=>{const selected=[...document.querySelectorAll('.gift-blend-select')].map(x=>products.find(p=>p.id===x.value)).filter(Boolean);const required=Number(document.getElementById('giftCount').value);if(selected.length!==required){document.getElementById('giftSummary').textContent='Please choose a blend for each selection before adding your gift box.';return;}const mug=document.getElementById('giftMug').value;const details=selected.map(p=>p.name).join(', ');const price=129+selected.reduce((sum,p)=>sum+p.price,0);cart.push({id:'custom-gift-'+Date.now(),name:`Personalized Gift Box (${mug}; ${details})`,price,qty:1});updateCart();document.getElementById('giftSummary').textContent='Your personalized gift box has been added to your bag. You can review it below.';document.getElementById('cart').scrollIntoView({behavior:'smooth'});});
-function addToCart(id){const p=products.find(x=>x.id===id);const found=cart.find(x=>x.id===id);if(found)found.qty++;else cart.push({...p,qty:1});updateCart();}
+
+function addToCart(id,boxSize,boxPrice){
+ const p=products.find(x=>x.id===id);
+ const cartId=id+'-'+boxSize;
+ const found=cart.find(x=>x.cartId===cartId);
+ if(found){
+  found.qty++;
+ }else{
+  cart.push({
+   ...p,
+   id:cartId,
+   productId:id,
+   boxSize:boxSize,
+   price:boxPrice,
+   qty:1
+  });
+ }
+ updateCart();
+}
+
 function updateCart(){document.getElementById('cartCount').textContent=cart.reduce((s,p)=>s+p.qty,0);const list=document.getElementById('cartList');if(!cart.length){list.innerHTML='<p>Your bag is currently empty.</p>';document.getElementById('cartTotal').textContent='Total: 0 MAD';return;}list.innerHTML=cart.map(p=>`<div class="cart-item"><strong>${p.name}</strong><span>${p.price} MAD</span><div class="qty-controls"><button data-minus="${p.id}" aria-label="Decrease quantity">−</button><span>${p.qty}</span><button data-plus="${p.id}" aria-label="Increase quantity">+</button></div><button class="remove-btn" data-remove="${p.id}">Remove</button></div>`).join('');const total=cart.reduce((s,p)=>s+p.price*p.qty,0);document.getElementById('cartTotal').textContent=`Total: ${total} MAD`;list.querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>{cart.find(p=>p.id===b.dataset.plus).qty++;updateCart()});list.querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>{const p=cart.find(p=>p.id===b.dataset.minus);p.qty--;if(p.qty<=0)cart=cart.filter(x=>x.id!==p.id);updateCart()});list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{cart=cart.filter(p=>p.id!==b.dataset.remove);updateCart()});}
 // Mobile navigation
 const nav=document.getElementById('navigation');document.getElementById('menuButton').addEventListener('click',()=>nav.classList.toggle('open'));nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
