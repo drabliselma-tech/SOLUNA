@@ -176,24 +176,12 @@ function addChat(text,who='bot'){const div=document.createElement('div');div.cla
 function assistantReply(q){const s=q.toLowerCase();if(/aroma|flavou?r|taste|mint|floral|spicy|fruity/.test(s))return 'We offer floral, fresh and minty, spicy, fruity and earthy herbal profiles. Try our Find Your Ritual quiz to receive a recommendation.';if(/capsule|machine/.test(s))return 'Our botanical capsules are inspired by the familiar coffee-capsule format. The SOLUNA machine is a prototype concept designed to prepare them.';if(/infusion|tisan|transparent|sachet/.test(s))return 'Our signature herbal Infusions use a proposed transparent pyramid sachet format, so customers can see the herbs inside.';if(/gift|box/.test(s))return 'The SOLUNA Gift Box is a curated gift concept combining selected botanical products.';if(/price|cost|mad|buy|order|payment|deliver/.test(s))return 'You can explore the collection and add products to your demonstration bag. Prices are illustrative, and real payment or delivery is not connected.';if(/ingredient|plant|blend/.test(s))return 'Each blend has its own plant combination. Open Our Blends or the product collection to see the proposed ingredients.';if(/hello|hi|bonjour|salut/.test(s))return 'Hello! Welcome to SOLUNA. I can help you explore infusions, capsules, aromas and the Gift Box.';return 'I can help you with SOLUNA products, ingredients, aromas, capsules, the machine and the Gift Box. What would you like to discover?';}
 document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('chatInput'),q=input.value.trim();if(!q)return;addChat(q,'user');addChat(assistantReply(q));input.value='';});
 document.getElementById('addMachineToBag').addEventListener('click',()=>{
-  const existing=cart.find(p=>p.id==='soluna-machine');
-
-  if(existing){
-    existing.qty++;
-  }else{
-    cart.push({
-      id:'soluna-machine',
-      name:'SOLUNA Tea Ritual Machine',
-      price:299,
-      qty:1
-    });
-  }
-
-  updateCart();
+  addToCart('soluna-machine',1,299);
 
   document.getElementById('cart').scrollIntoView({
     behavior:'smooth'
   });
+});
 });
 </script>
   <div class="moroccan-signature">
